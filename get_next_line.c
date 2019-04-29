@@ -6,7 +6,7 @@
 /*   By: eesaki <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 15:17:05 by eesaki            #+#    #+#             */
-/*   Updated: 2019/04/27 19:44:49 by eesaki           ###   ########.fr       */
+/*   Updated: 2019/04/28 19:22:36 by eesaki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,36 @@
 #include "libft/libft.h"
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<test purpose
 #include <stdio.h>
-#include <fcntl.h>
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>test purpose
 
-int		get_line(char *str, char **line)
+int		get_line(char **str, char **line)
 {
-	char	*tmp;
 	char	*nl;
 
-	nl = ft_strchr(str, '\n');
-	*line = strndup(str, (nl - str)); // create own strndup
-
+	if (*str)
+	{
+		nl = ft_strchr(*str, '\n');
+		if (nl != *str)
+			*line = strndup(*str, (nl - *str)); // create own strndup
+		else
+			*line = ft_strdup("\n");
+		*str = nl + 1;
+	}
+	if (ft_strlen(*line) > 0)
+		return (1);
+	return (0);
 }
 
-// read from fd, copy data to new malloced space
 int		get_next_line(const int fd, char **line)
 {
-	int		rc;
-	char	buff[BUFF_SIZE + 1];
-	char	*s[FD_MAX] = {NULL};
-	char	*tmp;
+	int			rc;
+	char		buff[BUFF_SIZE + 1];
+	static char	*s[FD_MAX];
+	char		*tmp;
 
-	if (fd < 0 || !line)
+	if (fd < 0 || !line || BUFF_SIZE <= 0)
 		return (-1);
-	
-	if ((rc = read(fd, buff, BUFF_SIZE)) != 0)
+	while ((rc = read(fd, buff, BUFF_SIZE)) != 0)
 	{
 		if (rc == -1)
 			return (-1);
@@ -52,15 +57,9 @@ int		get_next_line(const int fd, char **line)
 			s[fd] = tmp;
 		}
 	}
-								printf("s[fd]:%s\n", s[fd]);
-
 	if (ft_strlen(s[fd]) > 0)
 		return (get_line(&s[fd], line));
 	return (0);
-
-	// if (rc != 0)
-	// 	return (1);
-	// return (0);
 }
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<test purpose
@@ -73,34 +72,12 @@ int		main(int ac, char **av)
 		fd = 0;
 	else if (ac == 2)
 		fd = open(av[1], O_RDONLY);
-	else // invalid number of arguments
+	else
 		return (-1);
 
 	while (get_next_line(fd, &line))
-		get_next_line(fd, &line);
+		printf("line:%s\n", line);
 
 	return (0);
 }
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>test purpose
-
-// int		main(void)
-// {
-// 	int		fd;
-// 	char	*line;
-
-// 	if (fd = open("readme.txt", O_RDONLY) == - 1)
-// 	{
-// 		printf("file read error\n");
-// 		return (1);
-// 	}
-
-// 	get_next_line(fd, &line);
-// 	printf("line:%s\n", line);
-// 	get_next_line(fd, &line);
-// 	printf("line:%s\n", line);
-// 	get_next_line(fd, &line);
-// 	printf("line:%s\n", line);
-
-
-// 	return (0);
-// }
