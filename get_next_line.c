@@ -6,7 +6,7 @@
 /*   By: eesaki <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 15:17:05 by eesaki            #+#    #+#             */
-/*   Updated: 2019/04/28 19:22:36 by eesaki           ###   ########.fr       */
+/*   Updated: 2019/04/29 20:26:33 by eesaki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,16 @@ int		get_line(char **str, char **line)
 	{
 		nl = ft_strchr(*str, '\n');
 		if (nl != *str)
+		{
 			*line = strndup(*str, (nl - *str)); // create own strndup
+			*str = nl + 1;
+		}
 		else
-			*line = ft_strdup("\n");
-		*str = nl + 1;
+		{
+			*line = ft_strnew(0);
+			*str = nl + 1;
+			return (1);
+		}
 	}
 	if (ft_strlen(*line) > 0)
 		return (1);
@@ -63,21 +69,21 @@ int		get_next_line(const int fd, char **line)
 }
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<test purpose
-int		main(int ac, char **av)
-{
-	int		fd;
-	char	*line = NULL;
+// int		main(int ac, char **av)
+// {
+// 	int		fd;
+// 	char	*line = NULL;
 	
-	if (ac == 1)
-		fd = 0;
-	else if (ac == 2)
-		fd = open(av[1], O_RDONLY);
-	else
-		return (-1);
+// 	if (ac == 1)
+// 		fd = 0;
+// 	else if (ac == 2)
+// 		fd = open(av[1], O_RDONLY);
+// 	else
+// 		return (-1);
 
-	while (get_next_line(fd, &line))
-		printf("line:%s\n", line);
+// 	while (get_next_line(fd, &line))
+// 		printf("line:%s\n", line);
 
-	return (0);
-}
+// 	return (0);
+// }
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>test purpose
