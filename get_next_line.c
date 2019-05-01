@@ -6,7 +6,7 @@
 /*   By: eesaki <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 15:17:05 by eesaki            #+#    #+#             */
-/*   Updated: 2019/04/29 20:26:33 by eesaki           ###   ########.fr       */
+/*   Updated: 2019/04/30 21:01:18 by eesaki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,15 @@ int		get_line(char **str, char **line)
 
 	if (*str)
 	{
-		nl = ft_strchr(*str, '\n');
+		if (!(nl = ft_strchr(*str, '\n')))
+		{
+			*line = ft_strdup(*str);
+			*str = ft_strnew(0);
+			return (1);
+		}
 		if (nl != *str)
 		{
-			*line = strndup(*str, (nl - *str)); // create own strndup
+			*line = ft_strndup(*str, (nl - *str));
 			*str = nl + 1;
 		}
 		else
@@ -73,6 +78,7 @@ int		get_next_line(const int fd, char **line)
 // {
 // 	int		fd;
 // 	char	*line = NULL;
+// 	// int		ret = 0;
 	
 // 	if (ac == 1)
 // 		fd = 0;
@@ -82,7 +88,15 @@ int		get_next_line(const int fd, char **line)
 // 		return (-1);
 
 // 	while (get_next_line(fd, &line))
-// 		printf("line:%s\n", line);
+// 	{
+// 		ft_putendl(line);
+// 		ft_strdel(&line);
+	
+// 		// ret = ;
+// 		// printf("line:%s\n", line);
+// 		// if (!ret)
+// 		// 	break;
+// 	}
 
 // 	return (0);
 // }
