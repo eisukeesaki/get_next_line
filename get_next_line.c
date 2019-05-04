@@ -6,7 +6,7 @@
 /*   By: eesaki <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 15:17:05 by eesaki            #+#    #+#             */
-/*   Updated: 2019/05/02 20:01:48 by eesaki           ###   ########.fr       */
+/*   Updated: 2019/05/03 16:34: by eesaki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,41 +19,33 @@
 int		get_line(char **str, char **line)
 {
 	char	*nl;
+	char	*tmp;
 
-	if (*str)
+	while ((nl = ft_strchr(*str, '\n')))
 	{
-		if (!(nl = ft_strchr(*str, '\n'))) // no \n
-		{
-			*line = ft_strdup(*str);
-			*str[0] = '\0';
-			return (1);
-		}
-		if (nl != *str) // \n not at beginning
-		{
-			*line = ft_strndup(*str, (nl - *str));
-			*str = nl + 1;
-		}
-		else // \n at beginning
-		{
-			*line = ft_strnew(0);
-			// *line = NULL;
-			*str = nl + 1;
-			return (1);
-		}
-	}
-	if (ft_strlen(*line) > 0)
+		*line = ft_strndup(*str, (nl - *str));
+		tmp = ft_strdup(nl + 1);
+		free(*str);
+		*str = tmp;
 		return (1);
+	}
+	if (str)
+	{
+		*line = ft_strdup(*str);
+		ft_bzero(*str, ft_strlen(*str));
+		return (1);
+	}
 	return (0);
 }
 
 int		get_next_line(const int fd, char **line)
 {
-	int			rc;
 	char		buff[BUFF_SIZE + 1];
 	static char	*s[FD_MAX];
 	char		*tmp;
+	int			rc;
 
-	if (fd < 0 || !line || BUFF_SIZE <= 0)
+	if (fd < 0 || !line || BUFF_SIZE <= 0 || read(fd, buff, 0) < 0)
 		return (-1);
 	while ((rc = read(fd, buff, BUFF_SIZE)) != 0)
 	{
@@ -74,6 +66,49 @@ int		get_next_line(const int fd, char **line)
 	return (0);
 }
 
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<42FC
+int		main(void)
+{
+	char	*line = NULL;
+	int		fd1;
+	// int		fd2;
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fd1
+	if ((fd1 = open("./input1.txt", O_RDONLY)) == 1)
+		puts("file open error");
+	printf("fd1:%d\n", fd1);
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fd1
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fd2
+	// if ((fd2 = open("./input2.txt", O_RDONLY)) == 1)
+		// puts("file open error");
+	// printf("fd2:%d\n", fd2);
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fd2
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fd1
+	while (get_next_line(fd1, &line))
+	{
+		ft_putstr(line);
+		ft_strdel(&line);
+	}
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fd1
+	
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fd2
+	// while (get_next_line(fd2, &line))
+	// {
+	// 	ft_putstr(line);
+	// 	ft_strdel(&line);
+	// }
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fd2
+
+	close(fd1);
+	// close(fd2);
+	
+	// while (1);
+	return (0);
+}
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>42FC
+
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<test purpose
 // int		main(int ac, char **av)
 // {
@@ -93,40 +128,54 @@ int		get_next_line(const int fd, char **line)
 // 		ft_strdel(&line);
 // 	}
 // 	close(fd);
-// 	while (1);
+// 	// while (1);
 // 	return (0);
 // }
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>test purpose
 
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<42FC
-int				main(void)
-{
-	char		*line = NULL;
-	int			fd;
+// // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fc10
+// void caller()
+// {
+// 		char		*line = NULL;
+// 	int			fd1 = open("./gnl10.txt", O_RDONLY);
+// 	//int 		fd2 = open("./input.txt", O_RDONLY);			
 
-	fd = open("./input.txt", O_RDONLY);
-	printf("fd:%d\n", fd);
-	get_next_line(fd, &line);
-	printf("line:%s\n", line);
-	close(fd);
-	free(line);
-	// while (1);
+// 	get_next_line(fd1, &line);
+// 	get_next_line(fd2, &line);
+// 	close(fd1);
+// 	close(fd2);
+// 	ft_strdel(&line);
+// }
 
-	fd = open("./input2.txt", O_RDONLY);
-	if (fd == -1)
-		puts("file open error");
-	printf("fd:%d\n", fd);
-	get_next_line(fd, &line);
-	printf("line:%s\n", line);
-	close(fd);
-	free(line);
+// int				main(void)
+// {
+// 	caller();
+// 	// sleep(15);
+// 	while (1);
+// 	return (0);
+// }
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fc10
 
-	// fd = open("./input3.txt", O_RDONLY);
-	// printf("fd:%d\n", fd);
-	// get_next_line(fd, &line);
-	// printf("line:%s\n", line);
-	// close(fd);
-
-	return (0);
-}
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>42FC
+	// if (*str)
+	// {
+	// 	if (!(nl = ft_strchr(*str, '\n'))) // no \n
+	// 	{
+	// 		*line = ft_strdup(*str);
+	// 		*str[0] = '\0';
+	// 		return (1);
+	// 	}
+	// 	if (nl != *str) // \n not at beginning
+	// 	{
+	// 		*line = ft_strndup(*str, (nl - *str));
+	// 		*str = nl + 1;
+	// 	}
+	// 	else // \n at beginning
+	// 	{
+	// 		*line = ft_strnew(0);
+	// 		// *line = NULL;
+	// 		*str = nl + 1;
+	// 		return (1);
+	// 	}
+	// }
+	// // if (ft_strlen(*line) > 0)
+	// 	return (1);
