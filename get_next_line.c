@@ -21,19 +21,19 @@ int		get_line(char **str, char **line)
 	char	*nl;
 	char	*tmp;
 
-	while ((nl = ft_strchr(*str, '\n')))
+	while ((nl = ft_strchr(*str, '\n'))) // while there's a \n
 	{
-		*line = ft_strndup(*str, (nl - *str));
-		tmp = ft_strdup(nl + 1);
-		free(*str);
-		*str = tmp;
-		return (1);
+		*line = ft_strndup(*str, (nl - *str)); // dup first char to \n
+		tmp = ft_strdup(nl + 1); // assing next starting pos to tmp
+		free(*str); // *str is unnecesary because next starting pos is stored on tmp
+		*str = tmp; // assing next starting pos to *str
+		return (1); // read
 	}
-	if (str)
+	if (**str) // \n not found, **str is not NULL
 	{
-		*line = ft_strdup(*str);
-		ft_bzero(*str, ft_strlen(*str));
-		return (1);
+		*line = ft_strdup(*str); // *line = p->(all read data)
+		ft_bzero(*str, ft_strlen(*str)); // 0 out *str so that get_line will not be called anymore (because EOF)
+		return (1); // read
 	}
 	return (0);
 }
@@ -41,28 +41,28 @@ int		get_line(char **str, char **line)
 int		get_next_line(const int fd, char **line)
 {
 	char		buff[BUFF_SIZE + 1];
-	static char	*s[FD_MAX];
+	static char	*s[FD_MAX]; // store ptr to read data. data from different fds are stored on individual elements of *s[]
 	char		*tmp;
-	int			rc;
+	int			rc; // num of bytes read from fd
 
-	if (fd < 0 || !line || BUFF_SIZE <= 0 || read(fd, buff, 0) < 0)
+	if (fd < 0 || !line || BUFF_SIZE <= 0)
 		return (-1);
-	while ((rc = read(fd, buff, BUFF_SIZE)) != 0)
+	while ((rc = read(fd, buff, BUFF_SIZE)) != 0) // while there's something that has been read
 	{
-		if (rc == -1)
+		if (rc == -1) // read() error handling
 			return (-1);
-		buff[rc] = '\0';
-		if (s[fd] == NULL)
-			s[fd] = ft_strdup(buff);
-		else
+		buff[rc] = '\0'; // null terminate read string stored on buff
+		if (!s[fd]) // first time to assign read data to s[fd]?
+			s[fd] = ft_strdup(buff); // dup buff
+		else // not first time to assign read data to s[fd]
 		{
-			tmp = ft_strjoin(s[fd], buff);
-			free(s[fd]);
-			s[fd] = tmp;
+			tmp = ft_strjoin(s[fd], buff); 
+			free(s[fd]); // freeing s[fd] = ft_strdup(buff);
+			s[fd] = tmp; // assigin cat-ed string
 		}
 	}
-	if (ft_strlen(s[fd]) > 0)
-		return (get_line(&s[fd], line));
+	if (ft_strlen(s[fd]) > 0) // more lines remaining?
+		return (get_line(&s[fd], line)); // find next line and store it on line
 	return (0);
 }
 
@@ -71,7 +71,7 @@ int		main(void)
 {
 	char	*line = NULL;
 	int		fd1;
-	// int		fd2;
+	int		fd2;
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fd1
 	if ((fd1 = open("./input1.txt", O_RDONLY)) == 1)
@@ -80,31 +80,53 @@ int		main(void)
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fd1
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fd2
-	// if ((fd2 = open("./input2.txt", O_RDONLY)) == 1)
-		// puts("file open error");
-	// printf("fd2:%d\n", fd2);
+	if ((fd2 = open("./input2.txt", O_RDONLY)) == 1)
+		puts("file open error");
+	printf("fd2:%d\n", fd2);
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fd2
 
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<read alternalely
+	get_next_line(fd1, &line);
+	ft_putendl(line);
+	ft_strdel(&line);
+
+	get_next_line(fd2, &line);
+	ft_putendl(line);
+	ft_strdel(&line);
+
+	get_next_line(fd1, &line);
+	ft_putendl(line);
+	ft_strdel(&line);
+
+	get_next_line(fd2, &line);
+	ft_putendl(line);
+	ft_strdel(&line);
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>read alternalely
+
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fd1
-	while (get_next_line(fd1, &line))
-	{
-		ft_putstr(line);
-		ft_strdel(&line);
-	}
+	// while (get_next_line(fd1, &line))
+	// {
+	// 	// ft_putstr(line);
+	// 	ft_putendl(line);
+	// 	ft_strdel(&line);
+	// }
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fd1
 	
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fd2
 	// while (get_next_line(fd2, &line))
 	// {
-	// 	ft_putstr(line);
+	// 	// ft_putstr(line);
+	// 	ft_putendl(line);
 	// 	ft_strdel(&line);
 	// }
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fd2
 
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<close files
 	close(fd1);
-	// close(fd2);
-	
-	// while (1);
+	close(fd2);
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>close files
+
+	// while (1); // keep process running
 	return (0);
 }
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>42FC
