@@ -1,2 +1,0 @@
-input2 line1
-input2 line2
