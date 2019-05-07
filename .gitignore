@@ -7,8 +7,9 @@
 # Unignore all dirs
 !*/
 
-# Author file
+# Necessary files without extensions
 !author
+!Makefile
 
 # MacOS Desktop Services Store
 .DS_Store
