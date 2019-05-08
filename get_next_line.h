@@ -6,15 +6,15 @@
 /*   By: eesaki <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 15:16:33 by eesaki            #+#    #+#             */
-/*   Updated: 2019/05/06 16:02:04 by eesaki           ###   ########.fr       */
+/*   Updated: 2019/05/08 14:59:57 by eesaki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# define BUFF_SIZE  32
-# define FD_MAX  1024
+# define BUFF_SIZE 32
+# define FD_MAX 1024
 
 # include "libft/libft.h"
 # include <unistd.h>
