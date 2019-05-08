@@ -6,12 +6,11 @@
 /*   By: eesaki <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 15:17:05 by eesaki            #+#    #+#             */
-/*   Updated: 2019/05/06 15:45:14 by eesaki           ###   ########.fr       */
+/*   Updated: 2019/05/08 14:42:32 by eesaki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include "libft/libft.h"
 
 int		get_line(char **str, char **line)
 {
