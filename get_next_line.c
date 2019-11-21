@@ -6,7 +6,7 @@
 /*   By: eesaki <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 15:17:05 by eesaki            #+#    #+#             */
-/*   Updated: 2019/05/08 14:42:32 by eesaki           ###   ########.fr       */
+/*   Updated: 2019/11/20 17:04:20 by eesaki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ int		get_next_line(const int fd, char **line)
 		return (-1);
 	while ((rc = read(fd, buff, BUFF_SIZE)) != 0)
 	{
-		if (rc == -1)
-			return (-1);
 		buff[rc] = '\0';
 		if (!s[fd])
 			s[fd] = ft_strdup(buff);
@@ -57,6 +55,8 @@ int		get_next_line(const int fd, char **line)
 			s[fd] = tmp;
 		}
 	}
+	if (rc < 1 && s[fd] == NULL)
+		return (rc);
 	if (ft_strlen(s[fd]) > 0)
 		return (get_line(&s[fd], line));
 	return (0);
