@@ -6,7 +6,7 @@
 /*   By: eesaki <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/14 15:17:05 by eesaki            #+#    #+#             */
-/*   Updated: 2020/04/25 19:29:20 by eesaki           ###   ########.fr       */
+/*   Updated: 2020/04/25 20:07:59 by eesaki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int		get_line(char **str, char **line)
 	char	*tmp;
 
 	while ((nl = ft_strchr(*str, '\n')))
-	{/* extract line from str, store it in line, udpate str */
+	{
 		*line = ft_strndup(*str, (nl - *str));
 		tmp = ft_strdup(nl + 1);
 		free(*str);
@@ -35,7 +35,7 @@ int		get_line(char **str, char **line)
 		return (1);
 	}
 	if (**str)
-	{/* if \n wasn't found in str, store everything in line */
+	{
 		*line = ft_strdup(*str);
 		ft_bzero(*str, ft_strlen(*str));
 		return (1);
@@ -52,7 +52,7 @@ int		get_next_line(const int fd, char **line)
 	if (fd < 0 || !line || BUFF_SIZE <= 0)
 		return (-1);
 	while ((rc = read(fd, buff, BUFF_SIZE)) != 0)
-	{/* read until EOF, create a str, store ptr to it in arr of ptrs */
+	{
 		if (rc == -1)
 			return (-1);
 		buff[rc] = '\0';
